@@ -146,3 +146,8 @@ const sel = { ...btn, padding:'8px 10px' };
 const card = { background:'linear-gradient(180deg,#0d1018,#0b0e15)', border:'1px solid #1b2230', borderRadius:12, padding:16 };
 const miniCard = { background:'#0c1220', border:'1px solid #182133', borderRadius:10, padding:12 };
 const chip = { background:'#0d1424', border:'1px solid #1e2b45', color:'#ecf0ff', padding:'6px 10px', borderRadius:999, cursor:'pointer' };
+
+// Prevent static optimization so Next.js doesn't prerender this at build time.
+export async function getServerSideProps() {
+  return { props: {} };
+}
