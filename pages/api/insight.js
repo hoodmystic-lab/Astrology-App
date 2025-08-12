@@ -7,34 +7,32 @@ import {
   PLANETS
 } from '../../lib/astro';
 
-// Use Node runtime; define this ONCE.
 export const config = { runtime: 'nodejs' };
 
 export default async function handler(req, res) {
   try {
+    const system = (req.query.system === 'tropical') ? 'tropical' : 'sidereal';
     const now = new Date();
-    const longs = planetLongitudes(now, 'sidereal');
+    const longs = planetLongitudes(now, system);
 
-    const lines = PLANETS
-      .map(p => {
-        const Lsid = longs[p];
-        const sign = signFromLongitude(Lsid);
-        const nak = nakshatraFromSiderealLongitude(Lsid);
-        return `${p}: ${sign.sign} ${sign.degreeInSign.toFixed(1)}°, ${nak.name}`;
-      })
-      .join('; ');
+    const lines = PLANETS.map(p => {
+      const L = longs[p];
+      const s = signFromLongitude(L);
+      // Nakshatras only make sense for sidereal
+      const n = system === 'sidereal'
+        ? `, ${nakshatraFromSiderealLongitude(L).name}`
+        : '';
+      return `${p}: ${s.sign} ${s.degreeInSign.toFixed(1)}°${n}`;
+    }).join('; ');
 
-    const baseMsg = `Today (sidereal): ${lines}.`;
+    const baseMsg = `Today (${system}): ${lines}.`;
 
-    // If you haven't set OPENAI_API_KEY in Vercel → Project Settings → Environment Variables,
-    // return the non‑AI summary.
     if (!process.env.OPENAI_API_KEY) {
-      return res
-        .status(200)
-        .json({ message: `${baseMsg} (Add OPENAI_API_KEY for AI insight.)` });
+      return res.status(200).json({
+        message: `${baseMsg} (Add OPENAI_API_KEY in Vercel → Settings → Environment Variables for AI insight.)`
+      });
     }
 
-    // Minimal call to OpenAI (no SDK)
     const prompt = `Write a gentle, Pattern-style 2–3 sentence reflection based on: ${baseMsg}
 Avoid predictions. Use present-focused language.`;
 
@@ -55,7 +53,6 @@ Avoid predictions. Use present-focused language.`;
     const ai = j?.choices?.[0]?.message?.content?.trim();
     return res.status(200).json({ message: ai || baseMsg });
   } catch (err) {
-    // Return a friendly message instead of crashing the function.
     return res.status(200).json({ message: `Insight error: ${err.message}` });
   }
 }
