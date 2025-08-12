@@ -147,12 +147,15 @@ const card = { background:'linear-gradient(180deg,#0d1018,#0b0e15)', border:'1px
 const miniCard = { background:'#0c1220', border:'1px solid #182133', borderRadius:10, padding:12 };
 const chip = { background:'#0d1424', border:'1px solid #1e2b45', color:'#ecf0ff', padding:'6px 10px', borderRadius:999, cursor:'pointer' };
 
-// Prevent static optimization so Next.js doesn't prerender this at build time.
-export async function getServerSideProps() {
-  return { props: {} };
 }
 /* eslint-disable @next/next/no-img-element */
 import dynamic from 'next/dynamic';
 const App = dynamic(() => import('../src/App'), { ssr: false });
 export default function Index(){ return <App/>; }
+
+// Prevent static optimization so Next.js doesn't prerender or export this page.
+export async function getServerSideProps() {
+  return { props: {} };
+}
+
 
