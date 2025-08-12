@@ -151,3 +151,8 @@ const chip = { background:'#0d1424', border:'1px solid #1e2b45', color:'#ecf0ff'
 export async function getServerSideProps() {
   return { props: {} };
 }
+/* eslint-disable @next/next/no-img-element */
+import dynamic from 'next/dynamic';
+const App = dynamic(() => import('../src/App'), { ssr: false });
+export default function Index(){ return <App/>; }
+
