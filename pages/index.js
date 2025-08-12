@@ -158,4 +158,21 @@ export async function getServerSideProps() {
   return { props: {} };
 }
 
+export default function Home() {
+  return (
+    <div style={{minHeight:'100vh',display:'grid',placeItems:'center',fontFamily:'system-ui'}}>
+      <div style={{textAlign:'center'}}>
+        <h1>Next.js detected ✅</h1>
+        <p>If you see this on Vercel, the build is healthy.</p>
+      </div>
+    </div>
+  );
+}
+
+// Force server rendering so Vercel doesn't try to prerender/export.
+export async function getServerSideProps() {
+  return { props: {} };
+}
+
+
 
