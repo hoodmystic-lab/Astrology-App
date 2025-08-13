@@ -1,11 +1,12 @@
 // pages/api/insight.js
+// pages/api/insight.js
 import {
   planetLongitudes,
   signFromLongitude,
+  lahiriAyanamsa,               // <- this now exists
   nakshatraFromSiderealLongitude,
   PLANETS
 } from '../../lib/astro';
-
 
 export const config = { runtime: 'nodejs' };
 
